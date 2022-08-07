@@ -1,15 +1,23 @@
 const resolvers = {
   Query: {
-    // returns array of tracks for the home page
-    tracksForHome: (_, __, {dataSources}) => {
+    // returns an array of Tracks that will be used to populate the homepage grid of our web client
+    tracksForHome: (_, __, { dataSources }) => {
       return dataSources.trackAPI.getTracksForHome();
     },
-    // returns a single track for details page
-    track: (_, {id}, {dataSources}) => {
+
+    // get a single track by ID, for the track page
+    track: (_, { id }, { dataSources }) => {
       return dataSources.trackAPI.getTrack(id);
+    },
+
+    // get a single module by ID, for the module detail page
+    module: (_, { id }, { dataSources }) => {
+      return dataSources.trackAPI.getModule(id);
     }
   },
+
   Mutation: {
+    // increments a track's numberOfViews property
     incrementTrackViews: async (_, {id}, {dataSources}) => {
       try {
         const track = await dataSources.trackAPI.incrementTrackViews(id);
@@ -29,6 +37,7 @@ const resolvers = {
       }
     }
   },
+
   Track: {
     author: ({authorId}, _, {dataSources}) => {
       return dataSources.trackAPI.getAuthor(authorId);

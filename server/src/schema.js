@@ -2,24 +2,27 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
 type Query {
-  "Tracks array for the home page grid"
+  "Query to get tracks array for the homepage grid"
   tracksForHome: [Track!]!
-  "A Track retrieved by its id"
-  track(id: ID!): Track
+  "Fetch a specific track, provided a track's ID"
+  track(id: ID!): Track!
+  "Fetch a specific module, provided a module's ID"
+  module(id: ID!): Module!
 }
 
 type Mutation {
+  "Increment the number of views of a given track, when the track card is clicked"
   incrementTrackViews(id: ID!): IncrementTrackViewsResponse!
 }
 
 type IncrementTrackViewsResponse {
-  "status code for the mutation"
+  "Similar to HTTP status code, represents the status of the mutation"
   code: Int!
-  "Indication for success or failure"
+  "Indicates whether the mutation was successful"
   success: Boolean!
-  "Message for UI"
+  "Human-readable message for the UI"
   message: String!
-  "The updated Track"
+  "Newly updated track after a successful mutation"
   track: Track
 }
 
@@ -28,33 +31,42 @@ type Track {
   id: ID!
   "The track's title"
   title: String!
-  "The track's main author"
+  "The track's main Author"
   author: Author!
-  "An illustration to display on Track Card or Track main page"
+  "The track's illustration to display in track card or track page detail"
   thumbnail: String
+  "The track's approximate length to complete, in minutes"
   length: Int
+  "The number of modules this track contains"
   modulesCount: Int
+  "The track's complete description, can be in markdown format"
   description: String
+  "The number of times a track has been viewed"
   numberOfViews: Int
-  "Array witj all modules of this track"
+  "The track's complete array of Modules"
   modules: [Module!]!
 }
 
-"A Module can be part of many Tracks"
-type Module {
-  id: ID!
-  title: String!
-  "The length in minutes"
-  length: Int
-}
-
-"A Track's Author"
+"Author of a complete Track or a Module"
 type Author {
   id: ID!
-  "first and last name of the author"
+  "Author's first and last name"
   name: String!
-  "Url to a image of the author"
+  "Author's profile picture"
   photo: String
+}
+
+"A Module is a single unit of teaching. Multiple Modules compose a Track"
+type Module {
+  id: ID!
+  "The module's title"
+  title: String!
+  "The module's length in minutes"
+  length: Int
+  "The module's text-based description, can be in markdown format. In case of a video, it will be the enriched transcript"
+  content: String
+  "The module's video url, for video-based modules"
+  videoUrl: String
 }
 `;
 
